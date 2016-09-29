@@ -1,0 +1,22 @@
+{
+  "name": "cyclejs-translate",
+  "version": "1.0.0",
+  "description": "",
+  "main": "lib/index.js",
+  "scripts": {
+    "publish": "tsc",
+    "postinstall": "typings install",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "MIT",
+  "typings": "lib/index.d.ts",
+  "dependencies": {
+    "xstream": "6.4.0"
+  },
+  "devDependencies": {
+    "@cycle/base": "4.1.1",
+    "es6-shim": "0.35.1",
+    "typescript": "2.0.3"
+  }
+}
