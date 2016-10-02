@@ -1,4 +1,3 @@
-/// <reference path="./main.d.ts" />
 import "./tsxSetup";
 
 import { makeTranslateDriver, makeHTTPDriverLoader } from "./../../lib/index";

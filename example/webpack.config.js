@@ -5,7 +5,7 @@ module.exports = {
     filename: './dist/app.js'
   },
   // Turn on sourcemaps
-  devtool: 'eval-source-map',
+  devtool: 'cheap-source-map',
   resolve: {
     extensions: ['', '.webpack.js', '.web.js', '.ts', '.tsx', '.js']
   },
