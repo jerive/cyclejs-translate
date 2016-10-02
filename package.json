@@ -1,5 +1,5 @@
 {
-  "name": "cyclejs-translate",
+  "name": "jerive-cyclejs-translate",
   "version": "1.0.0",
   "description": "",
   "main": "lib/index.js",
@@ -12,10 +12,12 @@
   "license": "MIT",
   "typings": "lib/index.d.ts",
   "dependencies": {
-    "xstream": "6.4.0"
+    "@cycle/xstream-adapter": "^3.0.3",
+    "xstream": "5.0.6"
   },
   "devDependencies": {
     "@cycle/base": "4.1.1",
+    "@cycle/http": "11.0.1",
     "es6-shim": "0.35.1",
     "typescript": "2.0.3"
   }
