@@ -1,0 +1,29 @@
+{
+  "name": "cycle-tsx-auth0",
+  "version": "1.0.0",
+  "description": "Example cyclejs project",
+  "scripts": {
+    "postinstall": "typings install",
+    "dev": "concurrently \"webpack --watch\" \"lite-server --config bs-config.js\"",
+    "start": "npm run dev"
+  },
+  "dependencies": {
+    "@cycle/base": "^4.1.1",
+    "@cycle/dom": "^10.0.6",
+    "@cycle/http": "11.0.1",
+    "@cycle/isolate": "1.4.0",
+    "@cycle/xstream-run": "^3.0.3",
+    "immutable": "^3.8.1",
+    "proxy-middleware": "^0.15.0",
+    "snabbdom-jsx": "^0.3.1",
+    "xstream": "5.0.6"
+  },
+  "devDependencies": {
+    "concurrently": "^2.2.0",
+    "lite-server": "^2.2.2",
+    "ts-loader": "^0.8.2",
+    "typescript": "2.0.3",
+    "typings": "^1.3.1",
+    "webpack": "^1.13.1"
+  }
+}
