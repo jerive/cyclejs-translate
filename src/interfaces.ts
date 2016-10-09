@@ -36,7 +36,9 @@ export namespace JeriveCycleTranslate {
     export interface DriverOptions {
         flattenerDelimiter?: string;
         interpolator?: TranslationInterpolator;
-        useCache?: boolean;
+        cacheTranslations?: boolean;
+        getPreferredLocale?: () => Stream<string>;
+        bundledTranslations?: Object;
     }
 
     export interface TranslateDriverFunction {

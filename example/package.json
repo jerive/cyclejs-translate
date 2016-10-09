@@ -8,15 +8,18 @@
     "start": "npm run dev"
   },
   "dependencies": {
-    "@cycle/base": "^4.1.1",
-    "@cycle/dom": "^10.0.6",
+    "@cycle/base": "4.1.1",
+    "@cycle/collection": "0.4.0",
+    "@cycle/dom": "12.2.5",
     "@cycle/http": "11.0.1",
     "@cycle/isolate": "1.4.0",
-    "@cycle/xstream-run": "^3.0.3",
+    "@cycle/xstream-adapter": "3.0.3",
+    "@cycle/xstream-run": "3.1.0",
     "immutable": "^3.8.1",
+    "json-loader": "^0.5.4",
     "proxy-middleware": "^0.15.0",
     "snabbdom-jsx": "^0.3.1",
-    "xstream": "5.0.6"
+    "xstream": "6.4.1"
   },
   "devDependencies": {
     "concurrently": "^2.2.0",
