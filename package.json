@@ -12,12 +12,13 @@
   "license": "MIT",
   "typings": "lib/index.d.ts",
   "dependencies": {
-    "@cycle/xstream-adapter": "3.0.3",
-    "xstream": "6.4.1"
+    "@cycle/xstream-adapter": "3.0.4",
+    "xstream": "7.0.0"
   },
   "devDependencies": {
     "@cycle/base": "4.1.1",
-    "@cycle/http": "11.0.1",
+    "@cycle/http": "11.1.0",
+    "@types/core-js": "0.9.34",
     "typescript": "2.0.3"
   }
 }

@@ -27,7 +27,7 @@ export function makeTranslateDriver(
         const cache = {};
         const flatten = objectFlattener(options.flattenerDelimiter);
         const preferredLocale$ = options.getPreferredLocale();
-        const dedupedLocale$ = concat(preferredLocale$.take(1), locale$).compose(dropRepeats<string>());
+        const dedupedLocale$ = concat(preferredLocale$.take(1), locale$).compose(dropRepeats<string>()).remember();
         const flatTranslationLoader = (locale$: Stream<string>): Stream<jct.Translations> =>
             locale$.compose(translationLoader)
                 .replaceError(e => dedupedLocale$.compose(translationLoader))
@@ -40,12 +40,11 @@ export function makeTranslateDriver(
         const translator$ = Stream.combine(
             Stream.of(fallbackLocale).compose(cachedTranslationLoader),
             translation$
-        ).map(translationsFactory(options.interpolator));
+        ).map(translationsFactory(options.interpolator)).remember();
 
         translator$.addListener({
             next: () => {},
-            error: () => {},
-            complete: () => {}
+            error: e => console.error(e),
         });
 
         return translator$;
@@ -63,11 +62,11 @@ const makeCachedLoader = (loader: jct.TranslationLoader, cache: Object, useCache
 
     return (locale$: Stream<string>) => {
         return Stream.merge(
-            locale$.filter(inCache(true)).map(locale => ({ locale, payload: cache[locale]})).debug('cached'),
+            locale$.filter(inCache(true)).map(locale => ({ locale, payload: cache[locale]})),
             locale$.filter(inCache(false)).compose(loader).map(x => {
                 if (useCache) cache[x.locale] = x.payload;
                 return x;
-            }).debug('uncached')
+            })
         );
     };
 };
