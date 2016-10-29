@@ -19,7 +19,7 @@ export function makeTranslateDriver(
         options = Object.assign({
             flattenerDelimiter: ".",
             interpolator: getDefaultInterpolator(),
-            cacheTranslations: false,
+            cacheTranslations: true,
             getPreferredLocale: defaultGetPreferredLocale,
             bundledTranslations: {}
         }, options);
@@ -30,7 +30,7 @@ export function makeTranslateDriver(
         const dedupedLocale$ = concat(preferredLocale$.take(1), locale$).compose(dropRepeats<string>()).remember();
         const flatTranslationLoader = (locale$: Stream<string>): Stream<jct.Translations> =>
             locale$.compose(translationLoader)
-                .replaceError(e => dedupedLocale$.compose(translationLoader))
+                .replaceError(e => dedupedLocale$.drop(1).compose(translationLoader))
                 .map(({locale, payload}) => ({ locale, payload: flatten(payload)}));
 
         Object.keys(options.bundledTranslations).forEach(locale => cache[locale] = flatten(options.bundledTranslations[locale]));
@@ -67,7 +67,7 @@ const makeCachedLoader = (loader: jct.TranslationLoader, cache: Object, useCache
                 if (useCache) cache[x.locale] = x.payload;
                 return x;
             })
-        );
+        ).remember();
     };
 };
 

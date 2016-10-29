@@ -3,6 +3,15 @@ declare module "@cycle/collection" {
     export default collection;
 }
 
+declare module "switch-path" {
+    const switchPath;
+    export default switchPath;
+}
+
+declare module "history" {
+    export const createHistory: Function;
+} 
+
 interface Event {
     keyCode: number;
 }
