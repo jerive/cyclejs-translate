@@ -1,4 +1,8 @@
 {
+  "About": {
+    "Text": "This application is about translation",
+    "Title": "About"
+  },
   "CycleJs": "Cycle JS in English - demo",
   "Language": {
     "en-US": "English",

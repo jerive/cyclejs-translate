@@ -1,13 +1,11 @@
-import {ISources, ISinks} from "./ifaces";
-import xs from "xstream";
-import { NavigationComponent } from "./navigation.component";
+import { IComponent } from "./../ifaces";
 import { LocaleComponent } from "./locale.component";
 import Coll from "@cycle/collection";
+import xs from "xstream";
 
 const locales = ["en-US", "fr-FR", "es-ES"];
 
-export const MainComponent = (sources: ISources): ISinks => {
-    const { DOM: navigationDom$ } = NavigationComponent(sources);
+export const MainComponent: IComponent = sources => {
     const addLocale$ = sources.DOM.select("input").events("keydown").filter(e => {
         return e.keyCode === 13;
     }).map(e => [{
@@ -21,10 +19,8 @@ export const MainComponent = (sources: ISources): ISinks => {
     const localeCollectionDom$ = Coll.pluck(localeCollection$, x => x.DOM);
 
     return {
-        router: xs.of(),
-        translate: Coll.merge(localeCollection$, (x: ISinks) => x.translate),
-        DOM: xs.combine(navigationDom$, localeCollectionDom$).map(([nav, localeList]) => <div>
-            {nav}
+        translate: Coll.merge(localeCollection$, x => x.translate),
+        DOM: localeCollectionDom$.map(localeList => <div>
             <div classNames="container">
                 {localeList}
                 <hr/>

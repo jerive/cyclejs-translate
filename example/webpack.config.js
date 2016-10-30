@@ -1,6 +1,6 @@
-var webpack = require('webpack');  
+var webpack = require('webpack');
 module.exports = {  
-  entry: './src/app.ts',
+  entry: './src/app.tsx',
   output: {
     filename: './dist/app.js'
   },

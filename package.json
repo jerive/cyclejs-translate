@@ -17,8 +17,8 @@
   },
   "devDependencies": {
     "@cycle/base": "4.1.1",
-    "@cycle/http": "11.1.0",
+    "@cycle/http": "11.2.0",
     "@types/core-js": "0.9.34",
-    "typescript": "2.0.3"
+    "typescript": "2.0.6"
   }
 }

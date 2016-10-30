@@ -15,12 +15,12 @@ export interface ISources {
 }
 
 export interface ISinks {
-  DOM: Stream<VNode>;
+  DOM?: Stream<VNode>;
   translate?: Stream<string>;
   router?: Stream<Location| string>;
   [x: string]: any;
 }
 
 export interface IComponent{
-    (sources: ISources): ISinks;
+    (sources?: ISources): ISinks;
 }
