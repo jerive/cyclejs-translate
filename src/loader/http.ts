@@ -1,5 +1,4 @@
 import { RequestOptions, HTTPSource, Response } from "@cycle/http";
-import XStreamAdapter from "@cycle/xstream-adapter";
 import Stream from "xstream";
 import {JeriveCycleTranslate as jct} from "./../interfaces";
 
@@ -16,7 +15,7 @@ export function makeHTTPDriverLoader(httpDriver: Function, localeToRequestMapper
             request.category = locale;
             request.lazy = true;
             return request;
-        }).remember(), XStreamAdapter);
+        }).remember());
 
         return http.select(null).flatten().map((x: Response) => ({
             payload: x.body,

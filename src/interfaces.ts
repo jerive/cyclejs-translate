@@ -1,8 +1,4 @@
-/// <reference path="./../node_modules/xstream/core.d.ts" />
-/// <reference path="./../node_modules/@cycle/base/lib/index.d.ts" />
-
-import Stream from "./../node_modules/xstream/core.d";
-import { StreamAdapter } from "./../node_modules/@cycle/base/lib/index.d";
+import Stream from "./../node_modules/xstream/index.d";
 
 export namespace JeriveCycleTranslate {
     /**
@@ -43,6 +39,5 @@ export namespace JeriveCycleTranslate {
 
     export interface TranslateDriverFunction {
         (locale$: Stream<any>): Stream<Translator>;
-        streamAdapter?: StreamAdapter;
     }
 }

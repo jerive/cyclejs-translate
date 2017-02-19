@@ -1,8 +1,8 @@
 import Stream from "xstream";
 import dropRepeats from "xstream/extra/dropRepeats";
 import concat from "xstream/extra/concat";
-import XStreamAdapter from "@cycle/xstream-adapter";
 import {JeriveCycleTranslate as jct} from "./interfaces";
+import {adapt} from "@cycle/run/lib/adapt";
 
 /**
  * @param {string} fallbackLocale - The locale to fallback to when a translation 
@@ -27,7 +27,7 @@ export function makeTranslateDriver(
         const cache = {};
         const flatten = objectFlattener(options.flattenerDelimiter);
         const preferredLocale$ = options.getPreferredLocale();
-        const dedupedLocale$ = concat(preferredLocale$.take(1), locale$).compose(dropRepeats<string>()).remember();
+        const dedupedLocale$ = concat(preferredLocale$.take(1), locale$).compose(dropRepeats()).remember();
         const flatTranslationLoader = (locale$: Stream<string>): Stream<jct.Translations> =>
             locale$.compose(translationLoader)
                 .replaceError(e => dedupedLocale$.drop(1).compose(translationLoader))
@@ -47,15 +47,13 @@ export function makeTranslateDriver(
             error: e => console.error(e),
         });
 
-        return translator$;
+        return adapt(translator$);
     };
-
-    driver.streamAdapter = XStreamAdapter;
 
     return driver;
 };
 
-const makeCachedLoader = (loader: jct.TranslationLoader, cache: Object, useCache: boolean = true): jct.TranslationLoader => {
+const makeCachedLoader = (loader: jct.TranslationLoader, cache: {[x: string]: Object}, useCache: boolean = true): jct.TranslationLoader => {
     const inCache = (yes: boolean) => yes
         ? (locale: string) => !!cache[locale]
         : (locale: string) => !cache[locale];

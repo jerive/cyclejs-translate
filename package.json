@@ -5,20 +5,17 @@
   "main": "lib/index.js",
   "scripts": {
     "publish": "tsc",
-    "postinstall": "typings install",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "MIT",
   "typings": "lib/index.d.ts",
   "dependencies": {
-    "@cycle/xstream-adapter": "3.0.4",
-    "xstream": "7.0.0"
+    "xstream": "10.2.0"
   },
   "devDependencies": {
-    "@cycle/base": "4.1.1",
-    "@cycle/http": "11.2.0",
+    "@cycle/http": "12.0.0-rc.1",
     "@types/core-js": "0.9.34",
-    "typescript": "2.0.6"
+    "typescript": "2.2.0"
   }
 }
