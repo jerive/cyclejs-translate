@@ -14,8 +14,8 @@
     "xstream": "10.2.0"
   },
   "devDependencies": {
-    "@cycle/http": "12.0.0-rc.1",
-    "@types/core-js": "0.9.34",
-    "typescript": "2.2.0"
+    "@cycle/http": "12.0.0",
+    "@types/core-js": "0.9.35",
+    "typescript": "2.2.1"
   }
 }

@@ -7,15 +7,15 @@ module.exports = {
   // Turn on sourcemaps
   devtool: 'cheap-source-map',
   resolve: {
-    extensions: ['', '.webpack.js', '.web.js', '.ts', '.tsx', '.js', '.json']
+    extensions: ['.webpack.js', '.web.js', '.ts', '.tsx', '.js', '.json']
   },
   // Add minification
   plugins: [
     //new webpack.optimize.UglifyJsPlugin()
   ],
   module: {
-    loaders: [
-      { test: /\.tsx?$/, loader: 'ts' },
+    rules: [
+      { test: /\.tsx?$/, loader: 'ts-loader' },
       { test: /\.json$/, loader: 'json-loader' }
     ]
   }
