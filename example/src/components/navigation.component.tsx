@@ -5,12 +5,12 @@ export const NavigationComponent: IComponent = ({ DOM, translate}) => ({
         e.preventDefault();
         return (e.currentTarget as HTMLAnchorElement).pathname;
     }),
-    DOM: translate.map(t => (
+    DOM: translate.go("Menu.").map(({t}) => (
         <nav classNames="navigation navbar navbar-dark bg-inverse">
             <a classNames="navbar-brand" href="/">{t("CycleJs")}</a>
             <ul classNames="nav navbar-nav pull-right">
                 <li classNames="nav-item">
-                    <a classNames="nav-link" href="/about">{t("About.Title")}</a>
+                    <a classNames="nav-link" href="/about">{t("About")}</a>
                 </li>
             </ul>
         </nav>

@@ -8,24 +8,22 @@
   },
   "dependencies": {
     "@cycle/collection": "0.5.1",
-    "@cycle/dom": "15.0.0-rc.4",
-    "@cycle/http": "12.0.0",
-    "@cycle/isolate": "2.0.0",
-    "@cycle/run": "1.0.0",
+    "@cycle/dom": "17.1.0",
+    "cyclic-router": "^4.0.3",
     "json-loader": "0.5.4",
     "proxy-middleware": "0.15.0",
     "snabbdom-jsx": "0.3.1",
-    "xstream": "10.2.0"
+    "switch-path": "^1.2.0"
   },
   "devDependencies": {
     "@types/core-js": "0.9.35",
     "compression": "^1.6.2",
-    "concurrently": "3.3.0",
+    "concurrently": "3.4.0",
     "connect-history-api-fallback": "^1.3.0",
-    "lite-server": "2.2.2",
-    "serve-static": "1.11.2",
-    "ts-loader": "2.0.1",
-    "typescript": "2.2.0",
-    "webpack": "2.2.1"
+    "lite-server": "2.3.0",
+    "serve-static": "1.12.1",
+    "ts-loader": "2.0.3",
+    "typescript": "2.2.2",
+    "webpack": "2.4.1"
   }
 }

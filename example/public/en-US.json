@@ -1,9 +1,11 @@
 {
-  "About": {
-    "Text": "This application is about translation",
-    "Title": "About"
+  "Menu": {
+    "About": "About",
+    "CycleJs": "Cycle JS in English - demo"
   },
-  "CycleJs": "Cycle JS in English - demo",
+  "About": {
+    "Text": "This application is about translation"
+  },
   "Language": {
     "en-US": "English",
     "fr-FR": "French",

@@ -1,7 +1,9 @@
 {
-    "About": {
-        "Text": "Cette application parle de traduction",
-        "Title": "À propos"
+    "Menu": {
+        "About": "À propos",
+        "CycleJs": "Cycle JS en Français - démo"
     },
-    "CycleJs": "Cycle JS en Français - démo"
+    "About": {
+        "Text": "Cette application parle de traduction"
+    }
 }

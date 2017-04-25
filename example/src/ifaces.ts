@@ -1,16 +1,15 @@
 /// <reference path="./ifaces.d.ts" />
 
-import { VNode } from "@cycle/dom";
+import { VNode, DOMSource } from "@cycle/dom";
 import { Stream } from "xstream";
-import { DOMSource } from "@cycle/dom";
-import { Router } from "./router.hoc";
+import { RouterSource } from "cyclic-router/lib/RouterSource.d";
 
 import { JeriveCycleTranslate as jct } from "./../../lib/index";
 
 export interface ISources {
   DOM: DOMSource;
-  translate: Stream<jct.Translator>;
-  router: Router;
+  translate: jct.TranslatorSource;
+  router: RouterSource;
   [x: string]: any;
 }
 
@@ -18,7 +17,6 @@ export interface ISinks {
   DOM?: Stream<VNode>;
   translate?: Stream<string>;
   router?: Stream<string>;
-  [x: string]: any;
 }
 
 export interface IComponent{

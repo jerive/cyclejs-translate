@@ -1,4 +1,4 @@
-import Stream from "./../node_modules/xstream/index.d";
+import {Stream} from "xstream";
 
 export namespace JeriveCycleTranslate {
     /**
@@ -8,8 +8,8 @@ export namespace JeriveCycleTranslate {
      * You can access the current locale via the $currentLocale property 
      */
     export interface Translator {
-        (key: string, values?: Object): string;
-        $currentLocale?: string;
+        t(key: string, values?: {}): string;
+        currentLocale: string;
     }
 
     export interface TranslationLoader {
@@ -25,7 +25,7 @@ export namespace JeriveCycleTranslate {
     }
 
     export interface Translations {
-        payload: Object;
+        payload: {};
         locale: string;
     }
 
@@ -38,6 +38,10 @@ export namespace JeriveCycleTranslate {
     }
 
     export interface TranslateDriverFunction {
-        (locale$: Stream<any>): Stream<Translator>;
+        (locale$: Stream<string>): TranslatorSource;
+    }
+
+    export interface TranslatorSource {
+        go(ns?: string): Stream<Translator>;
     }
 }

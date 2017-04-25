@@ -1,8 +1,20 @@
-import Stream from "xstream";
+import {Stream} from "xstream";
 import dropRepeats from "xstream/extra/dropRepeats";
 import concat from "xstream/extra/concat";
 import {JeriveCycleTranslate as jct} from "./interfaces";
 import {adapt} from "@cycle/run/lib/adapt";
+
+class TranslatorSource implements jct.TranslatorSource {
+    constructor(
+        private t$: Stream<jct.Translator>
+    ) {}
+
+    go(namespace: string = ""): Stream<jct.Translator> {
+        return this.t$.map(({t, currentLocale}) => {
+            return { t: (k: string, v?: {}) => t(namespace + k, v), currentLocale};
+        });
+    }
+}
 
 /**
  * @param {string} fallbackLocale - The locale to fallback to when a translation 
@@ -12,10 +24,10 @@ import {adapt} from "@cycle/run/lib/adapt";
  */
 export function makeTranslateDriver(
     fallbackLocale: string,
-    translationLoader: jct.TranslationLoader,
+    loader: jct.TranslationLoader,
     options: jct.DriverOptions = {}
 ) {
-    const driver: jct.TranslateDriverFunction = (locale$: Stream<any>): Stream<jct.Translator> => {
+    const driver: jct.TranslateDriverFunction = (locale$: Stream<any>): jct.TranslatorSource => {
         options = Object.assign({
             flattenerDelimiter: ".",
             interpolator: getDefaultInterpolator(),
@@ -24,36 +36,51 @@ export function makeTranslateDriver(
             bundledTranslations: {}
         }, options);
 
+        const localeHttp$Cache: { [key: string]: Stream<jct.Translations> } = {};
         const cache = {};
         const flatten = objectFlattener(options.flattenerDelimiter);
-        const preferredLocale$ = options.getPreferredLocale();
-        const dedupedLocale$ = concat(preferredLocale$.take(1), locale$).compose(dropRepeats()).remember();
-        const flatTranslationLoader = (locale$: Stream<string>): Stream<jct.Translations> =>
-            locale$.compose(translationLoader)
-                .replaceError(e => dedupedLocale$.drop(1).compose(translationLoader))
-                .map(({locale, payload}) => ({ locale, payload: flatten(payload)}));
-
         Object.keys(options.bundledTranslations).forEach(locale => cache[locale] = flatten(options.bundledTranslations[locale]));
 
-        const cachedTranslationLoader = makeCachedLoader(flatTranslationLoader, cache, options.cacheTranslations);
-        const translation$ = dedupedLocale$.compose(cachedTranslationLoader);
-        const translator$ = Stream.combine(
-            Stream.of(fallbackLocale).compose(cachedTranslationLoader),
-            translation$
-        ).map(translationsFactory(options.interpolator)).remember();
+        const preferredLocale$ = options.getPreferredLocale();
+        const dedupedLocale$ = concat(preferredLocale$.take(1), locale$).compose(dropRepeats()).remember();
+        const translator$ = makeTranslator$(dedupedLocale$, loader, cache, flatten, fallbackLocale, localeHttp$Cache, options);
 
-        translator$.addListener({
-            next: () => {},
-            error: e => console.error(e),
-        });
-
-        return adapt(translator$);
+        return new TranslatorSource(adapt(translator$));
     };
 
     return driver;
 };
 
-const makeCachedLoader = (loader: jct.TranslationLoader, cache: {[x: string]: Object}, useCache: boolean = true): jct.TranslationLoader => {
+const makeTranslator$ = (
+    locale$: Stream<string>,
+    loader: jct.TranslationLoader,
+    cache: {[x: string]: {}},
+    flatten: Function,
+    fallbackLocale: string,
+    localeHttp$Cache: { [key: string]: Stream<jct.Translations> },
+    options: jct.DriverOptions
+) => {
+    const flatTranslationLoader = (locale$: Stream<string>): Stream<jct.Translations> =>
+        locale$.compose(loader)
+            .replaceError(e => locale$.drop(1).compose(loader))
+            .map(({locale, payload}) => ({ locale, payload: flatten(payload)}));
+
+    const cachedLoader = makeCachedLoader(flatTranslationLoader, cache, options.cacheTranslations);
+    const translation$ = locale$.compose(cachedLoader);
+    const translator$ = Stream.combine(
+        Stream.of(fallbackLocale).compose(cachedLoader),
+        translation$
+    ).map(translationsFactory(options.interpolator)).remember();
+
+    translator$.addListener({
+        next: () => {},
+        error: e => console.error(e),
+    });
+
+    return translator$;
+};
+
+const makeCachedLoader = (loader: jct.TranslationLoader, cache: {[x: string]: {}}, useCache: boolean = true): jct.TranslationLoader => {
     const inCache = (yes: boolean) => yes
         ? (locale: string) => !!cache[locale]
         : (locale: string) => !cache[locale];
@@ -69,21 +96,17 @@ const makeCachedLoader = (loader: jct.TranslationLoader, cache: {[x: string]: Ob
     };
 };
 
-const translationsFactory = (interpolate: jct.TranslationInterpolator): jct.TranslatorFactory => ([defaultTranslations, translations]) => {
-    const translate: jct.Translator = (key: string, values?: Object) => {
-        return interpolate(translations.payload[key]
+const translationsFactory = (interpolate: jct.TranslationInterpolator): jct.TranslatorFactory => ([defaultTranslations, translations]) => ({
+    currentLocale: translations.locale,
+    t: (key: string, values?: Object) => interpolate(
+        translations.payload[key]
             ? translations.payload[key]
             : defaultTranslations.payload[key]
                 ? defaultTranslations.payload[key]
                 : key
-            , values)
-        ;
-    };
-
-    translate.$currentLocale = translations.locale;
-
-    return translate;
-};
+            , values
+        )
+});
 
 const defaultGetPreferredLocale = () => {
     return Stream.of(getBrowserLanguage() || "en-US");
@@ -110,7 +133,7 @@ const getDefaultInterpolator = () => {
             if (typeof value === "undefined") {
                 throw new Error("Translate: missing value for parameter " + placeholders[i]);
             }
-            s = s.replace("{{" + placeholders[i] + "}}", value);
+            s = s.replace(`{{${placeholders[i]}}}`, value);
         }
         return s;
     };
