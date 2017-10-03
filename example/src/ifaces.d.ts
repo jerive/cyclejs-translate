@@ -3,10 +3,6 @@ declare module "@cycle/collection" {
     export default collection;
 }
 
-interface Event {
-    keyCode: number;
-}
-
 declare module "*.json" {
     export const json;
 }

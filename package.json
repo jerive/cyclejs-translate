@@ -11,11 +11,11 @@
   "license": "MIT",
   "typings": "lib/index.d.ts",
   "dependencies": {
-    "xstream": "10.2.0"
+    "xstream": "^10.9.0"
   },
   "devDependencies": {
-    "@cycle/http": "13.2.0",
-    "@types/core-js": "0.9.35",
-    "typescript": "2.2.2"
+    "@cycle/http": "^14.3.0",
+    "@types/core-js": "0.9.41",
+    "typescript": "2.3.4"
   }
 }

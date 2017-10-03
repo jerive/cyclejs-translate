@@ -28,7 +28,7 @@ export function makeTranslateDriver(
     options: jct.DriverOptions = {}
 ) {
     const driver: jct.TranslateDriverFunction = (locale$: Stream<any>): jct.TranslatorSource => {
-        options = Object.assign({
+        const newOptions = Object.assign({
             flattenerDelimiter: ".",
             interpolator: getDefaultInterpolator(),
             cacheTranslations: true,
@@ -38,12 +38,12 @@ export function makeTranslateDriver(
 
         const localeHttp$Cache: { [key: string]: Stream<jct.Translations> } = {};
         const cache = {};
-        const flatten = objectFlattener(options.flattenerDelimiter);
-        Object.keys(options.bundledTranslations).forEach(locale => cache[locale] = flatten(options.bundledTranslations[locale]));
+        const flatten = objectFlattener(newOptions.flattenerDelimiter);
+        Object.keys(options.bundledTranslations).forEach(locale => cache[locale] = flatten(newOptions.bundledTranslations[locale]));
 
-        const preferredLocale$ = options.getPreferredLocale();
+        const preferredLocale$ = newOptions.getPreferredLocale();
         const dedupedLocale$ = concat(preferredLocale$.take(1), locale$).compose(dropRepeats()).remember();
-        const translator$ = makeTranslator$(dedupedLocale$, loader, cache, flatten, fallbackLocale, localeHttp$Cache, options);
+        const translator$ = makeTranslator$(dedupedLocale$, loader, cache, flatten, fallbackLocale, localeHttp$Cache, newOptions.interpolator, newOptions.cacheTranslations);
 
         return new TranslatorSource(adapt(translator$));
     };
@@ -58,19 +58,20 @@ const makeTranslator$ = (
     flatten: Function,
     fallbackLocale: string,
     localeHttp$Cache: { [key: string]: Stream<jct.Translations> },
-    options: jct.DriverOptions
+    interpolator: (key: string, values: Object) => string,
+    cacheTranslations: boolean
 ) => {
     const flatTranslationLoader = (locale$: Stream<string>): Stream<jct.Translations> =>
         locale$.compose(loader)
             .replaceError(e => locale$.drop(1).compose(loader))
             .map(({locale, payload}) => ({ locale, payload: flatten(payload)}));
 
-    const cachedLoader = makeCachedLoader(flatTranslationLoader, cache, options.cacheTranslations);
+    const cachedLoader = makeCachedLoader(flatTranslationLoader, cache, cacheTranslations);
     const translation$ = locale$.compose(cachedLoader);
     const translator$ = Stream.combine(
         Stream.of(fallbackLocale).compose(cachedLoader),
         translation$
-    ).map(translationsFactory(options.interpolator)).remember();
+    ).map(translationsFactory(interpolator)).remember();
 
     translator$.addListener({
         next: () => {},
@@ -121,7 +122,7 @@ const getDefaultInterpolator = () => {
 
     return (key: string, values: Object) => {
         const placeholders: string[] = [];
-        let match: RegExpExecArray;
+        let match: RegExpExecArray | null;
         while (match = regex.exec(key)) {
             placeholders.push(match[1]);
         }
@@ -163,11 +164,9 @@ const getDefaultInterpolator = () => {
  * THE SOFTWARE.
  */
 const objectFlattener = (delimiter: string) => {
-    return function flattenObject (data: Object, path: string[] = null, result: Object = null) {
+    return function flattenObject (data: Object, path: string[] = [], result: Object = {}) {
         let key: string, keyWithPath: string, obj: string;
 
-        if (!path) path = [];
-        if (!result) result = {};
         for (key in data) {
             if (!Object.prototype.hasOwnProperty.call(data, key)) {
                 continue;

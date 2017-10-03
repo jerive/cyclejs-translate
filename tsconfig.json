@@ -8,8 +8,9 @@
     "suppressImplicitAnyIndexErrors": true,
     "noUnusedLocals": true,
     "module": "commonjs",
-    "target": "es5",
-    "outDir": "lib/"
+    "target": "es6",
+    "outDir": "lib/",
+    "strict": true
   },
   "formatCodeOptions": {
     "indentSize": 2,

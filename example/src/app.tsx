@@ -7,8 +7,8 @@ import { makeHTTPDriver } from "@cycle/http";
 import Stream from "xstream";
 
 // Routing
-import { createBrowserHistory } from "history";
-import { makeRouterDriver } from "cyclic-router";
+import { makeHistoryDriver } from "@cycle/history";
+import { routerify } from "cyclic-router";
 import switchPath from  "switch-path";
 
 import { makeTranslateDriver, makeHTTPDriverLoader } from "./../../lib/index";
@@ -48,8 +48,8 @@ const main = (sources: ISources) => {
 import * as en from "./../public/en-US.json";
 import * as fr from "./../public/fr-FR.json";
 
-run(main, {
-    router: makeRouterDriver(createBrowserHistory(), switchPath),
+run(routerify(main, switchPath), {
+    history: makeHistoryDriver(),
     DOM: makeDOMDriver("#app"),
     translate: makeTranslateDriver(
         "en-US",

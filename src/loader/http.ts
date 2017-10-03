@@ -17,9 +17,9 @@ export function makeHTTPDriverLoader(httpDriver: Function, localeToRequestMapper
             return request;
         }).remember());
 
-        return http.select(null).flatten().map((x: Response) => ({
+        return http.select().flatten().map((x: Response) => ({
             payload: x.body,
-            locale: x.request.category
+            locale: <string> x.request.category
         })).remember();
     };
 };

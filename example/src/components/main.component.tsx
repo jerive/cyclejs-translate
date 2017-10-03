@@ -6,7 +6,7 @@ import xs from "xstream";
 const locales = ["en-US", "fr-FR", "es-ES"];
 
 export const MainComponent: IComponent = sources => {
-    const addLocale$ = sources.DOM.select("input").events("keydown").filter(e => {
+    const addLocale$ = sources.DOM.select("input").events("keydown").filter((e: KeyboardEvent) => {
         return e.keyCode === 13;
     }).map(e => [{
         props$: { locale: String(e.srcElement["value"]).trim() }
